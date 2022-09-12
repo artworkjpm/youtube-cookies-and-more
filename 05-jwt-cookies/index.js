@@ -1,6 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const csurf = require("csurf");
+//he name of the cookie to use to store the token secret (defaults to '_csrf').
 const csrfProtection = csurf({ cookie: { httpOnly: true } });
 const jwt = require("jsonwebtoken");
 const path = require("path");
@@ -49,8 +50,11 @@ app.get("/get-secret-data", mustBeLoggedIn, (req, res) => {
 });
 
 // example json / api endpoint
+// app.get("/ajax-example", mustBeLoggedIn, (req, res) => {
+// 	res.json({ message: "Two plus two is four and grass is green." });
+// });
 app.get("/ajax-example", mustBeLoggedIn, (req, res) => {
-	res.json({ message: "Two plus two is four and grass is green." });
+	res.render("ajax-page", { messagex: "aubamayeng" });
 });
 
 // show the money transfer form
@@ -60,7 +64,9 @@ app.get("/transfer-money", csrfProtection, mustBeLoggedIn, (req, res) => {
 
 // have a POST request that verifies token AND needs to be CSRF protected because it hypothetically modifies data
 app.post("/transfer-money", csrfProtection, mustBeLoggedIn, (req, res) => {
-	res.send("Thank you, we are working on processing your transaction.");
+	res.send(
+		`Thank you, we are working on processing your transaction. <br /> <br />Generated CSRF Token: ${req.body._csrf} <br /> <br /> Stored cookie CSRF: ${req.cookies._csrf}`
+	);
 });
 
 // Our token checker middleware
