@@ -1,7 +1,8 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const csurf = require("csurf");
-//he name of the cookie to use to store the token secret (defaults to '_csrf').
+//prevents the Cross-Site Request Forgery(CSRF) attack on an application
+//the name of the cookie to use to store the token secret (defaults to '_csrf').
 const csrfProtection = csurf({ cookie: { httpOnly: true } });
 const jwt = require("jsonwebtoken");
 const path = require("path");
@@ -57,7 +58,7 @@ app.get("/ajax-example", mustBeLoggedIn, (req, res) => {
 	res.render("ajax-page", { messagex: "aubamayeng" });
 });
 
-// show the money transfer form
+// show the money transfer form and _csrf is created now! in cookies
 app.get("/transfer-money", csrfProtection, mustBeLoggedIn, (req, res) => {
 	res.render("transfer-money-form", { csrf: req.csrfToken() });
 });
