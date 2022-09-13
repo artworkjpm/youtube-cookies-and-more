@@ -7,6 +7,8 @@ const csrfProtection = csurf({ cookie: { httpOnly: true } });
 const jwt = require("jsonwebtoken");
 const path = require("path");
 const app = express();
+const bodyParser = require("body-parser");
+const parseForm = bodyParser.urlencoded({ extended: false });
 
 // You should actually store your JWT secret in your .env file - but to keep this example as simple as possible...
 const jwtsecret = "the most secret string of text in history";
@@ -60,16 +62,15 @@ app.get("/ajax-example", mustBeLoggedIn, (req, res) => {
 	res.render("ajax-page", { messagex: "aubamayeng" });
 });
 
-// show the money transfer form and _csrf is created now! in cookies
-app.get("/transfer-money", csrfProtection, mustBeLoggedIn, (req, res) => {
+app.get("/transfer-money", csrfProtection, function (req, res) {
+	// pass the csrfToken to the view
 	res.render("transfer-money-form", { csrf: req.csrfToken() });
 });
 
-// have a POST request that verifies token AND needs to be CSRF protected because it hypothetically modifies data
-app.post("/transfer-money", csrfProtection, mustBeLoggedIn, (req, res) => {
-	res.send(
-		`Thank you, we are working on processing your transaction. <br /> <br />Generated CSRF Token: ${req.body._csrf} <br /> <br /> Stored cookie CSRF: ${req.cookies._csrf}`
-	);
+app.post("/process", function (req, res) {
+	console.log(parseForm);
+	res.send("Successfully Validated!!");
+	console.log("Success!");
 });
 
 // Our token checker middleware
