@@ -11,6 +11,8 @@ const app = express();
 // You should actually store your JWT secret in your .env file - but to keep this example as simple as possible...
 const jwtsecret = "the most secret string of text in history";
 
+const fullName = "John Moran";
+
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -31,7 +33,7 @@ app.get("/", (req, res) => {
 
 app.post("/login", (req, res) => {
 	if (req.body.username === "john" && req.body.password === "password") {
-		res.cookie("cookieToken", jwt.sign({ name: "John Moran", favColor: "green" }, jwtsecret), { httpOnly: true });
+		res.cookie("cookieToken", jwt.sign({ name: fullName, favColor: "green" }, jwtsecret), { httpOnly: true });
 		res.redirect("/");
 	} else {
 		res.send(`<p>Incorrect login. <a href="/">Go back home.</a></p>`);
